@@ -8,7 +8,7 @@ import torch.optim as optim
 batch_size = 64
 transform = transforms.Compose([
     transforms.ToTensor(),
-    transforms.Normalize((0.1307), (0.3081))
+    transforms.Normalize((0.1307,), (0.3081,))
 ])
 
 # 下载训练集
