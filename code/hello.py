@@ -6,16 +6,16 @@ import torch.nn.functional as F
 import torch.optim as optim
 
 batch_size = 64
-transform = transforms.Compose([
+transform_fn = transforms.Compose([
     transforms.ToTensor(),
     transforms.Normalize((0.1307,), (0.3081,))
-])
+])   # 此transform实例化，实例的对象最好用另外的名字，如transform_fn
 
 # 下载训练集
 train_dataset = datasets.MNIST(root='../dataset/mnist/',
                                train=True,
-                               download=True,
-                               transform=transform)
+                               #download=True,
+                               transform=transform_fn)
 train_loader = DataLoader(train_dataset,
                           shuffle=True,
                           batch_size=batch_size)
@@ -23,17 +23,18 @@ train_loader = DataLoader(train_dataset,
 # 下载测试集
 test_dataset = datasets.MNIST(root='../dataset/mnist/',
                               train=False,
-                              download=True,
-                              transform=transform)
+                              #download=True,
+                              transform=transform_fn)
 test_loader = DataLoader(test_dataset,
                          shuffle=False,
                          batch_size=batch_size)
 
+# print(train_dataset[0])
 
 class Net(torch.nn.Module):
     def __init__(self):
         super(Net, self).__init__()
-        self.l1 = torch.nn.Linear(784, 521)
+        self.l1 = torch.nn.Linear(784, 512)
         self.l2 = torch.nn.Linear(512, 256)
         self.l3 = torch.nn.Linear(256, 128)
         self.l4 = torch.nn.Linear(128, 64)
@@ -50,7 +51,7 @@ class Net(torch.nn.Module):
 
 model = Net()
 
-criterion = torch.nn.CrossEntropyLoss()
+criterion = torch.nn.CrossEntropyLoss()   # 包含softmax函数
 optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.5)
 
 
@@ -85,6 +86,8 @@ def test():
 
 
 if __name__ == '__main__':
-    for epoch in range(10):
+    for epoch in range(1):
         train(epoch)
         test()
+    torch.save(model, r'F:\22pythonProject\ing\mnist.pth')
+
